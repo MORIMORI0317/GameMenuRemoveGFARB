@@ -1,0 +1,10 @@
+modLoader="javafml"
+loaderVersion="[33,)"
+license="LGPL v3"
+[[mods]]
+modId="gamemenuremovegfarb"
+version="${file.jarVersion}"
+displayName="Game Menu Remove GFARB"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/gamemenuremovegfarb"
+authors="MORIMORI0317"
+description="Thank you for downloading!"
