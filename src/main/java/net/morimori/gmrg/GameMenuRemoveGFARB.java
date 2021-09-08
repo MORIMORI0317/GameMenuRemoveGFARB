@@ -5,8 +5,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-@Mod("gamemenuremovegfarb")
+@Mod(GameMenuRemoveGFARB.MODID)
 public class GameMenuRemoveGFARB {
+    public static final String MODID = "gamemenuremovegfarb";
 
     public GameMenuRemoveGFARB() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);

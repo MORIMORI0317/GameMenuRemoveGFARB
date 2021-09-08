@@ -1,14 +1,17 @@
 package net.morimori.gmrg;
 
-import net.minecraft.client.gui.screen.IngameMenuScreen;
-import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 
 public class GuiHandler {
     @SubscribeEvent
     public static void onGUI(GuiScreenEvent.InitGuiEvent.Post e) {
-        if (e.getGui() instanceof IngameMenuScreen) {
+        if (e.getGui() instanceof PauseScreen && e.getWidgetList().size() > 0) {
+            if (ModList.get().isLoaded("bettergamemenu")) return;
+
             Button feedback = (Button) e.getWidgetList().get(3);
 
             Button reportbugs = (Button) e.getWidgetList().get(4);
@@ -17,7 +20,6 @@ public class GuiHandler {
                 e.removeWidget(feedback);
             if (reportbugs != null)
                 e.removeWidget(reportbugs);
-
         }
     }
 }
