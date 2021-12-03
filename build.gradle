@@ -1,5 +1,8 @@
-apply from: "https://raw.githubusercontent.com/TeamFelnull/GradleTemplate/main/minecraft/1.17.1/forge.gradle"
+apply from: "https://raw.githubusercontent.com/TeamFelnull/GradleTemplate/main/minecraft/1.18/forge.gradle"
 apply from: "https://raw.githubusercontent.com/TeamFelnull/GradleTemplate/main/minecraft/upload.gradle"
+apply from: "https://raw.githubusercontent.com/TeamFelnull/GradleTemplate/main/minecraft/publishing.gradle"
+
+apply plugin: 'maven-publish'
 
 buildscript {
     repositories {
@@ -12,6 +15,6 @@ buildscript {
 }
 
 minecraft {
-    
     //accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 }
+

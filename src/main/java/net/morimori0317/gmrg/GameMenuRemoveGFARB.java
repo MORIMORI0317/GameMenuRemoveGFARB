@@ -1,4 +1,4 @@
-package net.morimori.gmrg;
+package net.morimori0317.gmrg;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
