@@ -18,6 +18,6 @@ public class GameMenuRemoveGFARB {
     }
 
     private void doClientStuff(final FMLClientSetupEvent e) {
-        MinecraftForge.EVENT_BUS.register(GuiHandler.class);
+        MinecraftForge.EVENT_BUS.register(ScreenHandler.class);
     }
 }

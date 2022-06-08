@@ -1,20 +1,196 @@
-apply from: "https://raw.githubusercontent.com/TeamFelnull/GradleTemplate/main/minecraft/1.18/forge.gradle"
-apply from: "https://raw.githubusercontent.com/TeamFelnull/GradleTemplate/main/minecraft/upload.gradle"
-apply from: "https://raw.githubusercontent.com/TeamFelnull/GradleTemplate/main/minecraft/publishing.gradle"
-
-apply plugin: 'maven-publish'
-
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-    }
+plugins {
+    id 'eclipse'
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '5.+'
+    id "com.modrinth.minotaur" version "2.2.0"
+    id 'com.matthewprenger.cursegradle' version '1.4.0'
 }
 
+version = project.mod_version
+group = project.mod_group
+archivesBaseName = "${project.mod_name}-${project.mc_version}"
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
-    //accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    mappings channel: 'official', version: '1.19'
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'REGISTRIES'
+
+            property 'forge.logging.console.level', 'debug'
+
+            property 'forge.enabledGameTestNamespaces', project.mod_id
+
+            mods {
+                gamemenuremovegfarb {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'REGISTRIES'
+
+            property 'forge.logging.console.level', 'debug'
+
+            property 'forge.enabledGameTestNamespaces', project.mod_id
+
+            mods {
+                gamemenuremovegfarb {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        gameTestServer {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'REGISTRIES'
+
+            property 'forge.logging.console.level', 'debug'
+
+            property 'forge.enabledGameTestNamespaces', project.mod_id
+
+            mods {
+                gamemenuremovegfarb {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'REGISTRIES'
+
+            property 'forge.logging.console.level', 'debug'
+
+            args '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+
+            mods {
+                gamemenuremovegfarb {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
 }
 
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+repositories {
+
+}
+dependencies {
+    minecraft 'net.minecraftforge:forge:1.19-41.0.1'
+}
+
+jar.finalizedBy('reobfJar')
+
+ext.themanifest = {
+    attributes([
+            "Specification-Title"     : project.mod_name,
+            "Specification-Vendor"    : project.mod_vendor,
+            "Specification-Version"   : "1",
+            "Implementation-Title"    : project.name,
+            "Implementation-Version"  : project.jar.archiveVersion,
+            "Implementation-Vendor"   : project.mod_implevendor,
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+    ])
+}
+
+jar {
+    manifest themanifest
+}
+task devJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'dev'
+    manifest themanifest
+}
+task sourceJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+    manifest themanifest
+}
+artifacts {
+    archives devJar
+    archives sourceJar
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+modrinth {
+    token = System.getenv('modrinthapikey')
+    projectId = "${project.modrinth_id}"
+    versionName = "${project.mod_name}-${project.mc_version}-${project.mod_version}"
+    versionNumber = "${project.mc_version}-${project.mod_version}"
+    versionType = "${project.release_type}"
+    uploadFile = file("${project.buildDir}/libs/${project.name}-${project.mc_version}-${project.mod_version}.jar")
+    gameVersions = ["1.19"]
+    loaders = ["forge"]
+}
+curseforge {
+    if (System.getenv('curesforgeapikey') != null && "${project.curesforge_id}" != '') {
+        apiKey = System.getenv('curesforgeapikey')
+        project {
+            id = "${project.curesforge_id}"
+            changelog = ""
+            releaseType = "${project.release_type}"
+            addGameVersion "${project.mc_version}"
+            addGameVersion 'Java 17'
+
+            mainArtifact(file("${project.buildDir}/libs/${project.name}-${project.mc_version}-${project.mod_version}.jar")) {
+                displayName = "${project.name}-${project.mc_version}-${project.mod_version}"
+            }
+
+            addArtifact(file("${project.buildDir}/libs/${project.name}-${project.mc_version}-${project.mod_version}-sources.jar")) {
+                displayName = "${project.name}-${project.mc_version}-${project.mod_version}-sources"
+            }
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenForge(MavenPublication) {
+            artifactId = project.mod_id
+            from components.java
+            pom {
+                name = project.name
+                description = project.maven_description
+                licenses {
+                    license {
+                        name = project.maven_license_name
+                        url = project.maven_license_url
+                    }
+                }
+                developers {
+                    developer {
+                        id = project.maven_developer_name
+                        name = project.maven_developer_id
+                    }
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            url "https://maven.felnull.dev/"
+            credentials {
+                username = "felnull"
+                password = "${project.maven_password}" != '' ? "${project.maven_password}" : System.getenv('mavenpassword')
+            }
+        }
+    }
+}
