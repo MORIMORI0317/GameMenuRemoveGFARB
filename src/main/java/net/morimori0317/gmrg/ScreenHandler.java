@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ScreenHandler {
     @SubscribeEvent
-    public static void onScreenInit(ScreenEvent.InitScreenEvent.Post e) {
+    public static void onScreenInit(ScreenEvent.Init.Post e) {
         if (!(e.getScreen() instanceof PauseScreen pauseScreen) || !pauseScreen.showPauseMenu) return;
 
         if (ModList.get().isLoaded("bettergamemenu")) return;

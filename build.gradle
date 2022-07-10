@@ -1,7 +1,7 @@
 plugins {
     id 'eclipse'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '5.+'
+    id 'net.minecraftforge.gradle' version '5.1.+'
     id "com.modrinth.minotaur" version "2.2.0"
     id 'com.matthewprenger.cursegradle' version '1.4.0'
 }
@@ -15,6 +15,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
     mappings channel: 'official', version: '1.19'
+
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     runs {
@@ -25,7 +26,7 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
-            property 'forge.enabledGameTestNamespaces', project.mod_id
+            property 'forge.enabledGameTestNamespaces', 'gamemenuremovegfarb'
 
             mods {
                 gamemenuremovegfarb {
@@ -41,7 +42,7 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
-            property 'forge.enabledGameTestNamespaces', project.mod_id
+            property 'forge.enabledGameTestNamespaces', 'gamemenuremovegfarb'
 
             mods {
                 gamemenuremovegfarb {
@@ -57,7 +58,7 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
-            property 'forge.enabledGameTestNamespaces', project.mod_id
+            property 'forge.enabledGameTestNamespaces', 'gamemenuremovegfarb'
 
             mods {
                 gamemenuremovegfarb {
@@ -73,7 +74,7 @@ minecraft {
 
             property 'forge.logging.console.level', 'debug'
 
-            args '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', 'gamemenuremovegfarb', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
                 gamemenuremovegfarb {
@@ -87,12 +88,11 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-
 }
+
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19-41.0.1'
+    minecraft 'net.minecraftforge:forge:1.19-41.0.85'
 }
-
 jar.finalizedBy('reobfJar')
 
 ext.themanifest = {
