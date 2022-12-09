@@ -1,196 +1,51 @@
 plugins {
-    id 'eclipse'
-    id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '5.1.+'
-    id "com.modrinth.minotaur" version "2.2.0"
-    id 'com.matthewprenger.cursegradle' version '1.4.0'
+    id "architectury-plugin" version "3.4-SNAPSHOT"
+    id "dev.architectury.loom" version "0.12.0-SNAPSHOT" apply false
 }
 
-version = project.mod_version
-group = project.mod_group
-archivesBaseName = "${project.mod_name}-${project.mc_version}"
+architectury {
+    minecraft = rootProject.minecraft_version
+}
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+subprojects {
+    apply plugin: "dev.architectury.loom"
 
-println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
-minecraft {
-    mappings channel: 'official', version: '1.19'
+    loom {
+        silentMojangMappingsLicense()
+    }
 
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-
-    runs {
-        client {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-
-            property 'forge.logging.console.level', 'debug'
-
-            property 'forge.enabledGameTestNamespaces', 'gamemenuremovegfarb'
-
-            mods {
-                gamemenuremovegfarb {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        server {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-
-            property 'forge.logging.console.level', 'debug'
-
-            property 'forge.enabledGameTestNamespaces', 'gamemenuremovegfarb'
-
-            mods {
-                gamemenuremovegfarb {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        gameTestServer {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-
-            property 'forge.logging.console.level', 'debug'
-
-            property 'forge.enabledGameTestNamespaces', 'gamemenuremovegfarb'
-
-            mods {
-                gamemenuremovegfarb {
-                    source sourceSets.main
-                }
-            }
-        }
-
-        data {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-
-            property 'forge.logging.console.level', 'debug'
-
-            args '--mod', 'gamemenuremovegfarb', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-
-            mods {
-                gamemenuremovegfarb {
-                    source sourceSets.main
-                }
-            }
-        }
+    dependencies {
+        minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
+        // The following line declares the mojmap mappings, you may use other mappings as well
+        mappings loom.officialMojangMappings()
+        // The following line declares the yarn mappings you may select this one as well.
+        // mappings "net.fabricmc:yarn:1.19.2+build.3:v2"
     }
 }
 
-sourceSets.main.resources { srcDir 'src/generated/resources' }
+allprojects {
+    apply plugin: "java"
+    apply plugin: "architectury-plugin"
+    apply plugin: "maven-publish"
 
-repositories {
-}
-
-dependencies {
-    minecraft 'net.minecraftforge:forge:1.19-41.0.85'
-}
-jar.finalizedBy('reobfJar')
-
-ext.themanifest = {
-    attributes([
-            "Specification-Title"     : project.mod_name,
-            "Specification-Vendor"    : project.mod_vendor,
-            "Specification-Version"   : "1",
-            "Implementation-Title"    : project.name,
-            "Implementation-Version"  : project.jar.archiveVersion,
-            "Implementation-Vendor"   : project.mod_implevendor,
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-    ])
-}
-
-jar {
-    manifest themanifest
-}
-task devJar(type: Jar) {
-    from sourceSets.main.output
-    classifier = 'dev'
-    manifest themanifest
-}
-task sourceJar(type: Jar) {
-    from sourceSets.main.allSource
-    classifier = 'sources'
-    manifest themanifest
-}
-artifacts {
-    archives devJar
-    archives sourceJar
-}
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-}
-
-modrinth {
-    token = System.getenv('modrinthapikey')
-    projectId = "${project.modrinth_id}"
-    versionName = "${project.mod_name}-${project.mc_version}-${project.mod_version}"
-    versionNumber = "${project.mc_version}-${project.mod_version}"
-    versionType = "${project.release_type}"
-    uploadFile = file("${project.buildDir}/libs/${project.name}-${project.mc_version}-${project.mod_version}.jar")
-    gameVersions = ["1.19"]
-    loaders = ["forge"]
-}
-curseforge {
-    if (System.getenv('curesforgeapikey') != null && "${project.curesforge_id}" != '') {
-        apiKey = System.getenv('curesforgeapikey')
-        project {
-            id = "${project.curesforge_id}"
-            changelog = ""
-            releaseType = "${project.release_type}"
-            addGameVersion "${project.mc_version}"
-            addGameVersion 'Java 17'
-
-            mainArtifact(file("${project.buildDir}/libs/${project.name}-${project.mc_version}-${project.mod_version}.jar")) {
-                displayName = "${project.name}-${project.mc_version}-${project.mod_version}"
-            }
-
-            addArtifact(file("${project.buildDir}/libs/${project.name}-${project.mc_version}-${project.mod_version}-sources.jar")) {
-                displayName = "${project.name}-${project.mc_version}-${project.mod_version}-sources"
-            }
-        }
-    }
-}
-
-publishing {
-    publications {
-        mavenForge(MavenPublication) {
-            artifactId = project.mod_id
-            from components.java
-            pom {
-                name = project.name
-                description = project.maven_description
-                licenses {
-                    license {
-                        name = project.maven_license_name
-                        url = project.maven_license_url
-                    }
-                }
-                developers {
-                    developer {
-                        id = project.maven_developer_name
-                        name = project.maven_developer_id
-                    }
-                }
-            }
-        }
-    }
+    archivesBaseName = rootProject.archives_base_name
+    version = rootProject.mod_version
+    group = rootProject.maven_group
 
     repositories {
-        maven {
-            url "https://maven.felnull.dev/"
-            credentials {
-                username = "felnull"
-                password = "${project.maven_password}" != '' ? "${project.maven_password}" : System.getenv('mavenpassword')
-            }
-        }
+        // Add repositories to retrieve artifacts from in here.
+        // You should only use this when depending on other mods because
+        // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
+        // See https://docs.gradle.org/current/userguide/declaring_repositories.html
+        // for more information about repositories.
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+        options.release = 17
+    }
+
+    java {
+        withSourcesJar()
     }
 }

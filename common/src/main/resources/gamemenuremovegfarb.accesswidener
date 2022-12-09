@@ -1,0 +1,4 @@
+accessWidener   v2  named
+accessible field net/minecraft/client/gui/screens/PauseScreen SEND_FEEDBACK Lnet/minecraft/network/chat/Component;
+accessible field net/minecraft/client/gui/screens/PauseScreen REPORT_BUGS Lnet/minecraft/network/chat/Component;
+accessible field net/minecraft/client/gui/components/AbstractWidget height I

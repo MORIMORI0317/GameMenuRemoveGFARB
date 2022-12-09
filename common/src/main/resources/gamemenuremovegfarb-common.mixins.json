@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "net.morimori0317.gmrg.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "GridWidgetRowHelperMixin"
+  ],
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

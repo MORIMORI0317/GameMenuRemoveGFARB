@@ -1,0 +1,112 @@
+plugins {
+    id "com.github.johnrengelman.shadow" version "7.1.2"
+    id 'com.matthewprenger.cursegradle' version '1.4.0'
+    id "com.modrinth.minotaur" version "2.4.4"
+}
+
+architectury {
+    platformSetupLoomIde()
+    forge()
+}
+
+loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+
+    forge {
+        convertAccessWideners = true
+        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
+
+        mixinConfig "gamemenuremovegfarb-common.mixins.json"
+    }
+}
+
+configurations {
+    common
+    shadowCommon
+    compileClasspath.extendsFrom common
+    runtimeClasspath.extendsFrom common
+    developmentForge.extendsFrom common
+}
+
+dependencies {
+    forge "net.minecraftforge:forge:${rootProject.forge_version}"
+
+    common(project(path: ":common", configuration: "namedElements")) { transitive false }
+    shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    filesMatching("META-INF/mods.toml") {
+        expand "version": project.version
+    }
+}
+
+shadowJar {
+    exclude "fabric.mod.json"
+    exclude "architectury.common.json"
+
+    configurations = [project.configurations.shadowCommon]
+    classifier "dev-shadow"
+}
+
+remapJar {
+    input.set shadowJar.archiveFile
+    dependsOn shadowJar
+    classifier null
+    setArchivesBaseName("${rootProject.archives_base_name}-${project.name}-mc${rootProject.minecraft_version}")
+}
+
+jar {
+    classifier "dev"
+}
+
+sourcesJar {
+    def commonSources = project(":common").sourcesJar
+    dependsOn commonSources
+    from commonSources.archiveFile.map { zipTree(it) }
+}
+
+components.java {
+    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
+        skip()
+    }
+}
+
+curseforge {
+    if (System.getenv('curesforgeapikey') != null && "${project.curesforge_id}" != '') {
+        apiKey = System.getenv('curesforgeapikey')
+        project {
+            id = "${rootProject.curesforge_id}"
+
+            changelog = '';
+
+            releaseType = "${rootProject.release_type}"
+            addGameVersion "${rootProject.minecraft_version}"
+            addGameVersion 'Java 17'
+            addGameVersion "Forge"
+
+            mainArtifact(file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.name}-mc${rootProject.minecraft_version}-${project.mod_version}.jar")) {
+                displayName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-Forge"
+            }
+
+            addArtifact(file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.name}-mc${rootProject.minecraft_version}-${project.mod_version}-sources.jar")) {
+                displayName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-Forge-sources"
+            }
+        }
+    }
+}
+
+if (System.getenv('modrinthapikey') != null && "${project.modrinth_id}" != '') {
+    modrinth {
+        token = System.getenv('modrinthapikey')
+        projectId = "${rootProject.modrinth_id}"
+        versionName = "${rootProject.mod_display_name}-${rootProject.minecraft_version}-${project.mod_version}-Forge"
+        versionNumber = "${rootProject.minecraft_version}-${project.mod_version}-Forge"
+        versionType = "${project.release_type}"
+        uploadFile = file("${project.buildDir}/libs/${rootProject.archives_base_name}-${project.name}-mc${rootProject.minecraft_version}-${project.mod_version}.jar")
+        gameVersions = List.of(project.support_versions.split(","))
+        loaders = ["forge"]
+    }
+}

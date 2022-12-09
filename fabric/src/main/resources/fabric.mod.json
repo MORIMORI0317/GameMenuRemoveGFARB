@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "gamemenuremovegfarb",
+  "version": "${version}",
+  "name": "Game Menu Remove GFARB",
+  "description": "This mod is a mod that removes the \"Give Feedback\" and \"Report Bugs\" buttons in the game menu.\nThe ikisugi game menu mod...",
+  "authors": [
+    "MORIMORI0317"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/game-menu-remove-gfarb",
+    "sources": "https://github.com/MORIMORI0317/GameMenuRemoveGFARB",
+    "issues": "https://github.com/MORIMORI0317/GameMenuRemoveGFARB/issues"
+  },
+  "license": "GNU LGPLv3",
+  "icon": "assets/gamemenuremovegfarb/icon.png",
+  "environment": "client",
+  "entrypoints": {
+  },
+  "mixins": [
+    "gamemenuremovegfarb-common.mixins.json"
+  ],
+  "depends": {
+    "minecraft": ">=1.19.3"
+  }
+}
