@@ -3,7 +3,8 @@
   "package": "net.morimori0317.gmrg.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
-    "GridLayoutRowHelperMixin"
+    "GridLayoutRowHelperMixin",
+    "PauseScreenMixin"
   ],
   "mixins": [
   ],

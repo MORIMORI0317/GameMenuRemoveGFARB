@@ -10,14 +10,22 @@ Please write according to [Keep a Changelog](https://keepachangelog.com/en/1.0.0
 
 ### Changed
 
-- Port MC1.19.4
-
 ### Deprecated
 
 ### Removed
 
 ### Fixed
 
+- Fixed a bug where the Mods button was misplaced when using ModMenu. (Fabric Only)
+
 ### Security
 
-[Unreleased]: https://github.com/MORIMORI0317/GameMenuRemoveGFARB/commits
+## [2.1.0] - 2023-04-30
+
+### Changed
+
+- Port MC1.19.4
+
+[Unreleased]: https://github.com/MORIMORI0317/GameMenuRemoveGFARB/compare/v2.1.0...HEAD
+
+[2.1.0]: https://github.com/MORIMORI0317/GameMenuRemoveGFARB/commits/v2.1.0

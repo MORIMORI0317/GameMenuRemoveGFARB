@@ -15,7 +15,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(GridLayout.RowHelper.class)
 public abstract class GridLayoutRowHelperMixin {
 
-
     @Shadow
     public abstract LayoutSettings newCellSettings();
 
@@ -28,7 +27,13 @@ public abstract class GridLayoutRowHelperMixin {
         if (layoutElement instanceof Button button && (button.getMessage() == PauseScreen.SEND_FEEDBACK || button.getMessage() == PauseScreen.REPORT_BUGS)) {
             button.active = button.visible = false;
 
-            if (GMRGExpectPlatform.isRemoveGFARB())
+            if (GMRGExpectPlatform.isModMenuIntegration() && GMRGExpectPlatform.isModMenuReplaceBugs()) {
+                if (button.getMessage() == PauseScreen.SEND_FEEDBACK)
+                    button.setWidth(0);
+                return;
+            }
+
+            if (GMRGExpectPlatform.isRemoveGMRGSpace())
                 button.height = 0;
 
             cir.setReturnValue(this.addChild(layoutElement, i, newCellSettings().paddingTop(0)));
