@@ -59,7 +59,7 @@ public class GameMenuRemoveGFARBForge {
             return false;
         }
 
-        return currentForgeVersion.compareTo(EXIST_MOD_BUTTON_FORGE_VERSION_1194) >= 0;
+        return currentForgeVersion.compareTo(existVersion) >= 0;
     }
 
     private static boolean isNeoForge() {
