@@ -16,7 +16,6 @@ import java.util.function.Supplier;
 public class GameMenuRemoveGFARBForge {
     private static final String FORGE_MOD_ID = "forge";
     private static final String MINECRAFT_MOD_ID = "minecraft";
-    private static final String NEO_FORGE_DISPLAY_NAME = "NeoForge";
     private static final DefaultArtifactVersion EXIST_MOD_BUTTON_FORGE_VERSION_1194 = new DefaultArtifactVersion("45.1.15");
     private static final DefaultArtifactVersion EXIST_MOD_BUTTON_FORGE_VERSION_1201 = new DefaultArtifactVersion("47.1.25");
     private static final DefaultArtifactVersion MC_1194_VERSION = new DefaultArtifactVersion("1.19.4");
@@ -31,16 +30,13 @@ public class GameMenuRemoveGFARBForge {
         return new DefaultArtifactVersion(forgeMod.versionString());
     });
     private static final Supplier<DefaultArtifactVersion> CURRENT_MC_VERSION = Suppliers.memoize(() -> new DefaultArtifactVersion(ModList.get().getModFileById(MINECRAFT_MOD_ID).versionString()));
-    private static final Supplier<Boolean> NEO_FORGE = Suppliers.memoize(GameMenuRemoveGFARBForge::isNeoForge);
 
     public GameMenuRemoveGFARBForge() {
         ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> NetworkConstants.IGNORESERVERONLY, (remote, isServer) -> true));
     }
 
     public static boolean existModButton() {
-        if (NEO_FORGE.get()) {
-            return false;
-        }
+
 
         DefaultArtifactVersion currentForgeVersion = CURRENT_FORGE_VERSION.get();
 
@@ -60,12 +56,5 @@ public class GameMenuRemoveGFARBForge {
         }
 
         return currentForgeVersion.compareTo(existVersion) >= 0;
-    }
-
-    private static boolean isNeoForge() {
-        return ModList.get().getMods().stream()
-                .filter(it -> FORGE_MOD_ID.equals(it.getModId()))
-                .limit(1)
-                .anyMatch(it -> NEO_FORGE_DISPLAY_NAME.equals(it.getDisplayName()));
     }
 }
