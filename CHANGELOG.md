@@ -1,8 +1,7 @@
 # Changelog
-
 Changelog to track updates for this mod.  
-Add your changes to Unreleased if you want to commit.  
-Please write according to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
+    Add your changes to Unreleased if you want to commit.  
+    Please write according to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ## [Unreleased]
 
@@ -16,24 +15,24 @@ Please write according to [Keep a Changelog](https://keepachangelog.com/en/1.0.0
 
 ### Fixed
 
-- Fixed an issue where the Forge mod button would have a blank space when present
-
 ### Security
+
+## [2.1.2] - 2023-07-25
+
+### Fixed
+- Fixed an issue where the Forge mod button would have a blank space when present
 
 ## [2.1.1] - 2023-04-30
 
 ### Fixed
-
 - Fixed a bug where the Mods button was misplaced when using ModMenu. (Fabric Only)
 
 ## [2.1.0] - 2023-04-30
 
 ### Changed
-
 - Port MC1.19.4
 
-[Unreleased]: https://github.com/MORIMORI0317/GameMenuRemoveGFARB/compare/v2.1.1...HEAD
-
+[Unreleased]: https://github.com/MORIMORI0317/GameMenuRemoveGFARB/compare/v2.1.2...HEAD
+[2.1.2]: https://github.com/MORIMORI0317/GameMenuRemoveGFARB/compare/v2.1.1...v2.1.2
 [2.1.1]: https://github.com/MORIMORI0317/GameMenuRemoveGFARB/compare/v2.1.0...v2.1.1
-
 [2.1.0]: https://github.com/MORIMORI0317/GameMenuRemoveGFARB/commits/v2.1.0
